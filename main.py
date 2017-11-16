@@ -1,7 +1,8 @@
+import sys
 import numpy as np
 import aubio
 
-def beat_detect(filename, win_s=512, hop_s = 256):
+def beat_detect(filename, win_s=512, hop_s=256):
     samplerate = 0
 
     s = aubio.source(filename, samplerate, hop_s)
@@ -27,10 +28,40 @@ def beat_detect(filename, win_s=512, hop_s = 256):
         if read < hop_s: break
     return beats
 
+def onset_detect(filename, win_s=512, hop_s=256):
+    samplerate = 0
+
+    s = aubio.source(filename, samplerate, hop_s)
+    samplerate = s.samplerate
+
+    o = aubio.onset("default", win_s, hop_s, samplerate)
+
+    # list of onsets, in samples
+    onsets = []
+
+    # total number of frames read
+    total_frames = 0
+    while True:
+        samples, read = s()
+        if o(samples):
+            onsets.append(o.get_last())
+        total_frames += read
+        if read < hop_s: break
+    return onsets
+
 def main():
     print("Polyrhythmic Beat Detection")
-    test_beats = beat_detect("input/classical.00000.wav")
-    print(len(test_beats))
+
+    filename = ""
+
+    if(len(sys.argv) > 1):
+        filename = sys.argv[1]
+    
+    beats = beat_detect(filename)
+    print(np.array(beats) / 22050)
+
+    onsets = onset_detect(filename)
+    print(np.array(onsets) / 22050)
 
 if __name__ == "__main__":
     main()
