@@ -49,19 +49,24 @@ def onset_detect(filename, win_s=512, hop_s=256):
         if read < hop_s: break
     return onsets
 
+def quantize_beats(beats):
+    return False
+
 def main():
     print("Polyrhythmic Beat Detection")
 
-    filename = ""
+    filename = "input/metal.00032.wav"
 
     if(len(sys.argv) > 1):
         filename = sys.argv[1]
     
-    beats = beat_detect(filename)
-    print(np.array(beats) / 22050)
-
+    print("Onsets:\n")
     onsets = onset_detect(filename)
     print(np.array(onsets) / 22050)
+
+    beats = beat_detect(filename)
+    print("\nBeats:\n")
+    print(np.array(beats) / 22050)
 
 if __name__ == "__main__":
     main()
