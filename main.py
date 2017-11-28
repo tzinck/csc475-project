@@ -49,6 +49,11 @@ def onset_detect(filename, win_s=512, hop_s=256):
         if read < hop_s: break
     return onsets
 
+def is_close(num1, num2, percent_range):
+    if num1 >= (num2 * (1 + (percent_range/100))) or num1 <= (num2 * (1 - (percent_range/100))):
+        return False
+    return True
+
 def quantize_beats(beats):
     return False
 
