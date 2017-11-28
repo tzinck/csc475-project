@@ -60,7 +60,7 @@ def quantize_beats(beats):
 def main():
     print("Polyrhythmic Beat Detection")
 
-    filename = "input/metal.00032.wav"
+    filename = "input/120BPM34.wav"
 
     if(len(sys.argv) > 1):
         filename = sys.argv[1]
