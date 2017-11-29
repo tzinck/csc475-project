@@ -50,12 +50,16 @@ def onset_detect(filename, win_s=512, hop_s=256):
         if read < hop_s: break
     return onsets
 
-def is_close(num1, num2, percent_range):
+def is_close(num1, num2, max_diff, percent=50):
+    diff = abs(num1 - num2)
+    return diff <= max_diff*percent/100
+    '''
     upper = 1 + percent_range/100
     lower = 1 - percent_range/100
     if num1 >= (num2 * upper) or num1 <= (num2 * lower):
         return False
     return True
+    '''
 
 def quantize_beats(beats):
     gap = beats[1] - beats[0]
@@ -69,14 +73,19 @@ def quantize_beats(beats):
         j = i
         while (j < len(beats) and next_beat >= beats[j]):
             print ("checking {0} vs {1}".format(next_beat/22050, beats[j]/22050))
-            if (is_close(next_beat, beats[j], 10) and beats[j] not in rhythm1):
+            if (is_close(next_beat, beats[j], gap) and beats[j] not in rhythm1):
+                print ("{} IS GOOD.".format(beats[j] / 22050))
                 rhythm1.append(beats[j])
+                p = beats[j]
+                break
+            else:
+                p = beats[i]
             j = j+1
 
         # OPTION 1
         #p = next_beat
         # OPTION 2
-        p = beats[i]
+        #p = beats[i]
         
         print ("p = {}".format(p/22050))
 
